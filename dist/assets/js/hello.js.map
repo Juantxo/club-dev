@@ -1,1 +1,0 @@
-{"version":3,"names":[],"mappings":"","sources":["hello.js"],"sourcesContent":["(function(window) {\n  console.log(\"Selector de videos\");\n})(window);\n"],"file":"hello.js"}
