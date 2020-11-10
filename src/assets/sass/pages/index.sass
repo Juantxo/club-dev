@@ -1,0 +1,138 @@
+/// @import '../_includes'
+
+*:focus 
+  outline: 0 !important
+
+html
+  height: 100%
+
+body
+  height: 100%
+  transition: background-color .3s linear
+  margin: 0
+  .bg
+    box-sizing: border-box
+    height: 100%
+    background-color: transparent
+    background-image: url('../../../assets/images/sheader.jpg')
+    background-repeat: no-repeat
+    background-size: cover
+    background-position: center
+    z-index: -100
+  
+input[type="button"], button
+  border: none
+  outline:none
+
+input[type="button"]::-moz-focus-inner
+  border: 0
+
+.hidden
+  display: none
+.contenedor
+  position: relative
+  .words
+    position: absolute
+    top: 0
+    left: 0
+    left: 0
+    bottom: 0
+  .word-container
+    position: relative
+    top: 50%
+    transform: translateY(-50%)
+    width: 100%
+    .word
+      margin-left: 72px
+      margin-top: 0
+      width: 100%
+      color: white
+      font-weight: 100
+      font-size: 42px
+      &.toggle-word
+      display: none
+      height: 0
+      opacity: 0
+      overflow: hidden
+      transition: height 350ms ease-in-out, opacity 750ms ease-in-out
+      &.is-visible 
+        display: block
+        height: auto
+        opacity: 0.9
+
+.muted-button-container
+  margin: 16px 0
+  text-align: right 
+  button
+    &.speaker 
+      background-color: transparent
+      background-image: url('../../../assets/images/icon-mute.svg')
+      background-repeat: no-repeat
+      background-size: 40%
+      display: inline-block
+      height: 24px
+      width: 24px
+      position: relative
+      overflow: hidden
+    &.isPlaying 
+      background-image: url('../../../assets/images/icon-playing.svg')
+
+.play-video-container
+  width: 80px;
+  height: 80px; 
+  text-align: center
+  margin: 16px auto
+  button
+    width: 80px;
+    height: 80px;
+    background-color: #1c77ff
+    opacity: 0.6
+    border-radius: 160px
+    background-image: url('../../../assets/images/play-white.svg')
+    background-repeat: no-repeat
+    background-size: 35%
+    background-position: center center
+    transition: all 0.5s ease-out
+    &:hover
+      opacity: 1
+
+
+ul
+  &.ul-compartir
+    li
+      display: inline
+      margin-right: 16px
+      cursor: pointer
+      color: #666666
+      a
+        color: #666666 !important
+        text-decoration: none
+
+
+.video-names-form
+  border-radius: 5px
+  background-color: #f2f2f2
+  padding: 20px
+  p.error
+    font-size: 12px
+    color: blue
+  input[type=text], select
+    width: 100%
+    padding: 12px 20px
+    margin: 8px 0
+    display: inline-block
+    border: 1px solid #ccc
+    border-radius: 4px
+    box-sizing: border-box
+  input[type=submit] 
+    width: 100%
+    background-color: #4CAF50
+    color: white
+    padding: 14px 20px
+    margin: 8px 0
+    border: none
+    border-radius: 4px
+    cursor: poiter
+    &:hover
+      background-color: #45a049
+ 
