@@ -40,6 +40,30 @@
 
 
     <link rel="stylesheet" id="reykjavik-stylesheet-css" href="./files/style.css" type="text/css" media="all">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        #vis {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        svg .seat.UPA {
+            fill: green;
+        }
+
+        svg .seat.NDA {
+            fill: orange;
+        }
+
+        svg .seat.Other {
+            fill: lightgrey;
+        }
+    </style>
+
     <script type="text/javascript" src="./files/css-vars-ponyfill.min.js"></script>
     <script type="text/javascript">
         window.onload = function () {
@@ -66,6 +90,7 @@
                         <div>
 
                             <h1>Hello</h1>
+                            <div id='vis'></div>
 
 
                         </div>
@@ -79,9 +104,138 @@
 
     </div><!-- /#page -->
 
+    <script type="text/javascript" src="./assets/js/vendors/d3.v6.min.js"></script>
+    <script type="text/javascript" src="./assets/js/vendors/d3-parliament.js"></script>
 
     <script>
+        (function (window) {
+            console.log("Club del Siglo XXI", window);
+        })(window);
+
     </script>
+
+    <script>
+
+        // https://stackoverflow.com/questions/3796025/fill-svg-path-element-with-a-background-image
+        // http://bl.ocks.org/anonymous/2b1d992dfb66542ec1e2
+        // https://www.philipp.haussleiter.de/2014/08/adding-background-image-to-svg-circles/
+
+        // https://stackoverflow.com/questions/37100296/how-to-fill-an-image-inside-my-svg-circles-in-d3-js
+        // http://bl.ocks.org/eesur/be2abfb3155a38be4de4
+
+        // https://stackoverflow.com/questions/53655993/d3-image-on-top-of-node-circle-doesnt-work-with-clippath
+        // clippath circle
+        // https://stackoverflow.com/questions/40901441/d3-combine-circles-and-images
+        // https://stackoverflow.com/questions/34885308/how-to-use-d3-clip-path-on-image-within-a-function
+        // http://jsfiddle.net/x1m5bfry/
+        const margin = { top: 80, right: 20, left: 20, bottom: 0 };
+
+        const $chart = d3.select('#vis');
+        const width = parseInt($chart.node().offsetWidth) - margin.left - margin.right;
+        const height = parseInt(width * 0.7) - margin.top - margin.bottom;
+
+        const parliament = d3.parliament()
+            .width(width)
+            .innerRadiusCoef(0.4);
+
+        parliament.enter
+            .fromCenter(false)
+            .smallToBig(false);
+
+        let symbol = d3.symbol().size([50]);
+
+        const $svg = d3.select('#vis')
+            .append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+
+        const $def = $svg
+            .append('defs')
+            .append("pattern")
+            .attr("id", "demo_img")
+            .attr("patternUnits", "userSpaceOnUse")
+            .attr('width', "600")
+            .attr('height', "450")
+            .append("image")
+            .attr("xlink:href", "johanna-sigurdartottir-1-300x132.jpg")
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', "600")
+            .attr('height', "450");
+
+
+        /*
+ 
+        const $filter = $svg
+            .append('filter')
+            .attr("id", "demo_img")
+            .attr('x', "0%")
+            .attr('y', "0%")
+            .attr('width', "300%")
+            .attr('height', "300%")
+            .append("feImage")
+            .attr("xlink:href", "johanna-sigurdartottir-1-300x132.jpg")
+ 
+*/
+
+        const $g = $svg.append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+
+
+        function setupChart(data) {
+            const parties = data.map(d => {
+                let alliance = null;
+                if (d.winning_party_alliance === 'National Democratic Alliance') {
+                    alliance = 'NDA'
+                } else if (d.winning_party_alliance === 'United Progressive Alliance') {
+                    alliance = 'UPA'
+                } else {
+                    alliance = 'Other';
+                }
+                return {
+                    ...d,
+                    alliance: alliance
+                }
+            })
+
+            const nest = d3.nest()
+                .key(d => d.alliance)
+                .sortKeys(d3.ascending)
+                .entries(parties)
+                .map(g => ({
+                    id: g.key,
+                    seats: g.values
+                }));
+
+            $g.datum(nest)
+                .call(parliament);
+
+
+            const circles = $svg
+                .selectAll('circle')
+                .style("fill", (d) => {
+                    //return 'url(#' + d.data.id + ')';
+                    return 'url(#' + 'demo_img' + ')';
+                });
+
+            parliament.on('click', d => {
+                console.log(d.data.constituency)
+            })
+            parliament.on('mouseenter', d => {
+                console.log(d.data)
+            })
+
+        }
+
+        function init() {
+            d3.csv('assets/data/ue.csv').then(setupChart);
+        }
+
+        init();
+
+    </script>
+
 
 
 
